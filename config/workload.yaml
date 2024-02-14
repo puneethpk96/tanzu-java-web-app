@@ -1,23 +1,30 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: tanzu-java-web-app
+  generation: 1
   labels:
-    apps.tanzu.vmware.com/workload-type: web
-    apps.tanzu.vmware.com/has-tests: "true"
-    apps.tanzu.vmware.com/auto-configure-actuators: "true"
     app.kubernetes.io/part-of: tanzu-java-web-app
+    apps.tanzu.vmware.com/auto-configure-actuators: "true"
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: web
+  name: tanzu-java-web-app
 spec:
-  build:
-    env:
-      - name: BP_JVM_VERSION
-        value: "11"
   params:
-  - name: annotations
-    value:
-      autoscaling.knative.dev/minScale: "1"
+    - name: annotations
+      value:
+        autoscaling.knative.dev/minScale: "1"
+    - name: scanning_source_policy
+      value: lax-scan-policy
+    - name: scanning_image_policy
+      value: lax-scan-policy
+    - name: testing_pipeline_matching_labels
+      value:
+        apps.tanzu.vmware.com/language: java
+    - name: live-update
+      value: "true"
+  serviceAccountName: default
   source:
     git:
-      url: <https URL for your generated project's Git repository>
       ref:
         branch: main
+      url: https://github.com/puneethpk96/tanzu-java-web-app.git
